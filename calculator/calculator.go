@@ -105,41 +105,41 @@ func (c *Calculator) Cos(value string) string {
 
 // Tan 执行正切运算
 func (c *Calculator) Tan(value string) string {
-    v, _ := decimal.NewFromString(value)
-    // 由于 decimal 包不直接支持三角函数，我们需要先转换为 float64
-    floatVal := v.InexactFloat64()
-    tanVal := math.Tan(floatVal)
-    return decimal.NewFromFloat(tanVal).Round(c.precision).String()
+	v, _ := decimal.NewFromString(value)
+	// 由于 decimal 包不直接支持三角函数，我们需要先转换为 float64
+	floatVal := v.InexactFloat64()
+	tanVal := math.Tan(floatVal)
+	return decimal.NewFromFloat(tanVal).Round(c.precision).String()
 }
 
 // Asin 执行反正弦运算
 func (c *Calculator) Asin(value string) string {
-    v, _ := decimal.NewFromString(value)
-    floatVal := v.InexactFloat64()
-    if floatVal < -1 || floatVal > 1 {
-        panic("反正弦函数的输入必须在 [-1,1] 范围内")
-    }
-    asinVal := math.Asin(floatVal)
-    return decimal.NewFromFloat(asinVal).Round(c.precision).String()
+	v, _ := decimal.NewFromString(value)
+	floatVal := v.InexactFloat64()
+	if floatVal < -1 || floatVal > 1 {
+		panic("反正弦函数的输入必须在 [-1,1] 范围内")
+	}
+	asinVal := math.Asin(floatVal)
+	return decimal.NewFromFloat(asinVal).Round(c.precision).String()
 }
 
 // Acos 执行反余弦运算
 func (c *Calculator) Acos(value string) string {
-    v, _ := decimal.NewFromString(value)
-    floatVal := v.InexactFloat64()
-    if floatVal < -1 || floatVal > 1 {
-        panic("反余弦函数的输入必须在 [-1,1] 范围内")
-    }
-    acosVal := math.Acos(floatVal)
-    return decimal.NewFromFloat(acosVal).Round(c.precision).String()
+	v, _ := decimal.NewFromString(value)
+	floatVal := v.InexactFloat64()
+	if floatVal < -1 || floatVal > 1 {
+		panic("反余弦函数的输入必须在 [-1,1] 范围内")
+	}
+	acosVal := math.Acos(floatVal)
+	return decimal.NewFromFloat(acosVal).Round(c.precision).String()
 }
 
 // Atan 执行反正切运算
 func (c *Calculator) Atan(value string) string {
-    v, _ := decimal.NewFromString(value)
-    floatVal := v.InexactFloat64()
-    atanVal := math.Atan(floatVal)
-    return decimal.NewFromFloat(atanVal).Round(c.precision).String()
+	v, _ := decimal.NewFromString(value)
+	floatVal := v.InexactFloat64()
+	atanVal := math.Atan(floatVal)
+	return decimal.NewFromFloat(atanVal).Round(c.precision).String()
 }
 
 // PI 返回π常量
@@ -149,4 +149,13 @@ func (c *Calculator) PI() string {
 		return "3.141592653589793"
 	}
 	return pi.Round(c.precision).String()
+}
+
+// E 返回自然对数e常量
+func (c *Calculator) E() string {
+	e, err := decimal.NewFromString("2.718281828459045235360287471352662497757247093699959574966967627724076630353")
+	if err != nil {
+		return "2.718281828459045"
+	}
+	return e.Round(c.precision).String()
 }

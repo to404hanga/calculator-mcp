@@ -18,10 +18,11 @@ const (
 	PowNode
 	SinNode
 	CosNode
-	TanNode    // 新增
-	AsinNode   // 新增
-	AcosNode   // 新增
-	AtanNode   // 新增
+	TanNode
+	AsinNode
+	AcosNode
+	AtanNode
+	ENode    // 新增
 )
 
 // Node 接口定义了所有 AST 节点必须实现的方法
@@ -243,6 +244,19 @@ func (a *AtanOperation) Type() NodeType {
 	return AtanNode
 }
 
+// EConstant 表示自然对数e常量
+type EConstant struct {
+	calc *calculator.Calculator
+}
+
+func (e *EConstant) Evaluate() string {
+	return e.calc.E()
+}
+
+func (e *EConstant) Type() NodeType {
+	return ENode
+}
+
 // parseFactor 解析因子
 func (p *Parser) parseFactor() Node {
 	if p.pos >= len(p.tokens) {
@@ -263,6 +277,9 @@ func (p *Parser) parseFactor() Node {
 
 	case token == "PI":
 		return &PIConstant{calc: p.calc}
+
+	case token == "E":  // 新增
+		return &EConstant{calc: p.calc}
 
 	case token == "sqrt":
 		if p.pos >= len(p.tokens) || p.tokens[p.pos] != "(" {

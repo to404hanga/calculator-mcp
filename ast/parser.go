@@ -22,7 +22,8 @@ const (
 	AsinNode
 	AcosNode
 	AtanNode
-	ENode    // 新增
+	ENode    // 自然对数e常量
+	LogNode  // 对数运算
 )
 
 // Node 接口定义了所有 AST 节点必须实现的方法
@@ -257,6 +258,21 @@ func (e *EConstant) Type() NodeType {
 	return ENode
 }
 
+// LogOperation 表示自然对数操作
+type LogOperation struct {
+	Value Node
+	Base  Node
+	calc  *calculator.Calculator
+}
+
+func (l *LogOperation) Evaluate() string {
+	return l.calc.Log(l.Value.Evaluate(), l.Base.Evaluate())
+}
+
+func (l *LogOperation) Type() NodeType {
+	return LogNode
+}
+
 // parseFactor 解析因子
 func (p *Parser) parseFactor() Node {
 	if p.pos >= len(p.tokens) {
@@ -264,6 +280,18 @@ func (p *Parser) parseFactor() Node {
 	}
 
 	token := p.tokens[p.pos]
+
+	// 检查单个运算符和前缀运算符的情况
+	if token == "+" || token == "-" || token == "*" || token == "/" || token == "^" {
+		if p.pos == 0 || p.pos == len(p.tokens)-1 {
+			panic("无效的表达式")
+		}
+		// 如果运算符在开头，也是无效的表达式
+		if p.pos == 0 {
+			panic("无效的表达式")
+		}
+	}
+
 	p.pos++
 
 	switch {
@@ -278,7 +306,7 @@ func (p *Parser) parseFactor() Node {
 	case token == "PI":
 		return &PIConstant{calc: p.calc}
 
-	case token == "E":  // 新增
+	case token == "E": // 新增
 		return &EConstant{calc: p.calc}
 
 	case token == "sqrt":
@@ -365,6 +393,57 @@ func (p *Parser) parseFactor() Node {
 		p.pos++
 		return &AtanOperation{Operand: operand, calc: p.calc}
 
+	case token == "log":
+		if p.pos >= len(p.tokens) || p.tokens[p.pos] != "(" {
+			panic("log后需要括号")
+		}
+		p.pos++
+		value := p.parseExpression()
+		if p.pos >= len(p.tokens) || p.tokens[p.pos] != "," {
+			panic("log函数需要两个参数，用逗号分隔")
+		}
+		p.pos++
+		base := p.parseExpression()
+		if p.pos >= len(p.tokens) || p.tokens[p.pos] != ")" {
+			panic("log缺少右括号")
+		}
+		p.pos++
+		return &LogOperation{Value: value, Base: base, calc: p.calc}
+
+	case token == "lg":
+		if p.pos >= len(p.tokens) || p.tokens[p.pos] != "(" {
+			panic("lg后需要括号")
+		}
+		p.pos++
+		operand := p.parseExpression()
+		if p.pos >= len(p.tokens) || p.tokens[p.pos] != ")" {
+			panic("lg缺少右括号")
+		}
+		p.pos++
+		// 使用 LogOperation，将 10 作为底数
+		return &LogOperation{
+			Value: operand,
+			Base:  &NumberLiteral{Value: "10"},
+			calc:  p.calc,
+		}
+
+	case token == "ln":
+		if p.pos >= len(p.tokens) || p.tokens[p.pos] != "(" {
+			panic("ln后需要括号")
+		}
+		p.pos++
+		operand := p.parseExpression()
+		if p.pos >= len(p.tokens) || p.tokens[p.pos] != ")" {
+			panic("ln缺少右括号")
+		}
+		p.pos++
+		// 使用 LogOperation，将 E 作为底数
+		return &LogOperation{
+			Value: operand,
+			Base:  &EConstant{calc: p.calc},
+			calc:  p.calc,
+		}
+
 	default:
 		// 直接将数字作为字符串存储
 		return &NumberLiteral{Value: token}
@@ -383,6 +462,7 @@ func NewParser(expression string, calc *calculator.Calculator) *Parser {
 	// 将表达式转换为标记序列
 	expression = strings.ReplaceAll(expression, "(", " ( ")
 	expression = strings.ReplaceAll(expression, ")", " ) ")
+	expression = strings.ReplaceAll(expression, ",", " , ") // 添加对逗号的处理
 	expression = strings.ReplaceAll(expression, "+", " + ")
 	expression = strings.ReplaceAll(expression, "-", " - ")
 	expression = strings.ReplaceAll(expression, "*", " * ")

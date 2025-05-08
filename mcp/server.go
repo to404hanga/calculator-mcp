@@ -25,6 +25,9 @@ This is a scientific calculator supporting high-precision calculations with the 
 3. Mathematical Functions
    - sqrt(x): Square root calculation
    - pow(x, y): Exponentiation, e.g., 2 ^ 3
+   - log(x,b): Logarithm with base b, e.g., log(8,2) = 3
+   - ln(x): Natural logarithm (base e), e.g., ln(e) = 1
+   - lg(x): Common logarithm (base 10), e.g., lg(100) = 2
    
 4. Trigonometric Functions
    - sin(x): Sine function
@@ -46,11 +49,16 @@ Usage Examples:
 4. Compound operation: (1 + sqrt(16)) * 2
 5. Trigonometric function: sin(PI/2)
 6. High precision: E ^ 2
+7. Logarithm: log(1000,10) = 3
+8. Natural logarithm: ln(E^2) = 2
+9. Common logarithm: lg(1000) = 3
 
 Important Notes:
 1. Division by zero is not allowed
 2. Square root of negative numbers is not allowed
-3. Input values for inverse trigonometric functions must be within valid range`
+3. Input values for inverse trigonometric functions must be within valid range
+4. Logarithm input and base must be positive, base cannot be 1
+5. Natural logarithm input must be positive`
 
 var calcInputSchema = mcp.ToolInputSchema{
 	Type: "object",

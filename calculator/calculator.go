@@ -159,3 +159,34 @@ func (c *Calculator) E() string {
 	}
 	return e.Round(c.precision).String()
 }
+
+// Log 执行对数运算，支持自定义底数
+func (c *Calculator) Log(value, base string) string {
+    v, _ := decimal.NewFromString(value)
+    b, _ := decimal.NewFromString(base)
+    
+    if v.IsZero() || v.IsNegative() {
+        panic("对数的输入值必须为正数")
+    }
+    if b.IsZero() || b.IsNegative() || b.Equal(decimal.NewFromInt(1)) {
+        panic("对数的底数必须为正数且不等于1")
+    }
+
+    // 使用换底公式：log_b(x) = ln(x) / ln(b)
+    vFloat := v.InexactFloat64()
+    bFloat := b.InexactFloat64()
+    
+    logVal := math.Log(vFloat) / math.Log(bFloat)
+    return decimal.NewFromFloat(logVal).Round(c.precision).String()
+}
+
+// Ln 执行自然对数运算（以e为底）
+func (c *Calculator) Ln(value string) string {
+    v, _ := decimal.NewFromString(value)
+    if v.IsZero() || v.IsNegative() {
+        panic("自然对数的输入必须为正数")
+    }
+    floatVal := v.InexactFloat64()
+    logVal := math.Log(floatVal)
+    return decimal.NewFromFloat(logVal).Round(c.precision).String()
+}

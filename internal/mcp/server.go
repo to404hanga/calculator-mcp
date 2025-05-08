@@ -6,8 +6,8 @@ import (
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
-	"github.com/to404hanga/calculator-mcp/ast"
-	"github.com/to404hanga/calculator-mcp/calculator"
+	"github.com/to404hanga/calculator-mcp/internal/ast"
+	"github.com/to404hanga/calculator-mcp/internal/calculator"
 )
 
 const toolDescriptionEN = `High-Precision Scientific Calculator

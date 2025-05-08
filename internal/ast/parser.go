@@ -3,7 +3,7 @@ package ast
 import (
 	"strings"
 
-	"github.com/to404hanga/calculator-mcp/calculator"
+	"github.com/to404hanga/calculator-mcp/internal/calculator"
 )
 
 // NodeType 定义节点类型

@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/mark3labs/mcp-go/server"
-	"github.com/to404hanga/calculator-mcp/mcp"
+	"github.com/to404hanga/calculator-mcp/internal/mcp"
 )
 
 func main() {

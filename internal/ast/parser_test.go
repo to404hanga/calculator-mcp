@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/shopspring/decimal"
-	"github.com/to404hanga/calculator-mcp/calculator"
+	"github.com/to404hanga/calculator-mcp/internal/calculator"
 )
 
 func TestParser(t *testing.T) {
